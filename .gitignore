@@ -1,0 +1,109 @@
+####################################
+# OS
+####################################
+.DS_Store
+Thumbs.db
+
+####################################
+# IntelliJ IDEA
+####################################
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+####################################
+# VS Code
+####################################
+.vscode/
+
+####################################
+# Maven
+####################################
+target/
+**/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+.buildNumber
+.mvn/timing.properties
+
+####################################
+# Gradle (just in case)
+####################################
+.gradle/
+build/
+
+####################################
+# Logs
+####################################
+*.log
+logs/
+**/logs/
+
+####################################
+# Spring Boot
+####################################
+*.jar
+*.war
+*.ear
+*.original
+**/*.jar.original
+
+####################################
+# Docker
+####################################
+docker-compose.override.yml
+.env
+.env.*
+!.env.example
+
+####################################
+# Test reports
+####################################
+surefire-reports/
+failsafe-reports/
+**/surefire-reports/
+**/failsafe-reports/
+
+####################################
+# Coverage
+####################################
+coverage/
+jacoco/
+*.exec
+
+####################################
+# Temporary files
+####################################
+*.tmp
+*.temp
+*.swp
+*.swo
+
+####################################
+# Node / Frontend (if added later)
+####################################
+node_modules/
+dist/
+.next/
+.out/
+
+####################################
+# Secrets / Local config
+####################################
+application-local.yml
+application-local.properties
+application-dev.yml
+application-dev.properties
+
+####################################
+# IDE build caches
+####################################
+.classpath
+.project
+.settings/
