@@ -22,12 +22,18 @@ RUN mvn -pl ${MODULE} -am -DskipTests package
 
 # ---------- RUNTIME STAGE ----------
 FROM eclipse-temurin:17-jre-alpine
+
 WORKDIR /app
+
+# Install curl for healthcheck
+RUN apk add --no-cache curl
 
 ARG MODULE
 COPY --from=build /build/${MODULE}/target/*.jar app.jar
 
 ENV JAVA_OPTS="-Xms128m -Xmx512m"
+
 EXPOSE 8080
 
 ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app/app.jar"]
+

@@ -23,6 +23,12 @@ services:
     image: discovery-service:dev
     ports:
       - "8761:8761"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8761/actuator/health || exit 1" ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks: [ backend ]
 
   userservice:
@@ -37,6 +43,14 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9090/actuator/health || exit 1" ]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
     networks: [ backend ]
 
   projectservice:
@@ -51,6 +65,14 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9091/actuator/health || exit 1" ]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
     networks: [ backend ]
 
   taskservice:
@@ -65,6 +87,14 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9092/actuator/health || exit 1" ]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
     networks: [ backend ]
 
 networks:

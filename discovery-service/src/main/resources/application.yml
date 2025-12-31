@@ -15,6 +15,38 @@ eureka:
     fetch-registry: false
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env,beans,loggers
+        # Açık olan actuator endpoint'leri
+
   endpoint:
     health:
       show-details: always
+      probes:
+        enabled: true
+        # Kubernetes readiness/liveness için
+
+    info:
+      enabled: true
+
+    metrics:
+      enabled: true
+
+    env:
+      enabled: true
+      show-values: when-authorized
+      # Env değerlerini sadece auth varsa göster
+
+    loggers:
+      enabled: true
+      # Runtime log level değiştirme
+
+  health:
+    db:
+      enabled: true
+    diskspace:
+      enabled: true
+    ping:
+      enabled: true
