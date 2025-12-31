@@ -1,6 +1,6 @@
 spring:
   application:
-    name: ticketing-project-rest
+    name: user-service
   profiles:
     active: default
 
