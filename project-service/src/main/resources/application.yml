@@ -18,25 +18,16 @@ spring:
     driver-class-name: org.postgresql.Driver
 server:
   port: 9091
+context-path: http://localhost:${server.port}/actuator
+
 
 eureka:
   instance:
-    status-page-url-path: ${management.context-path}/info
-    health-check-url-path: ${management.context-path}/health
+    status-page-url-path: ${context-path}/info
+    health-check-url-path: ${context-path}/health
   client:
     serviceUrl:
       defaultZone: http://discovery-service:8761/eureka/
-
-
-management:
-  endpoint:
-    health:
-      show-details: "ALWAYS"
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  context-path: http://localhost:${server.port}/actuator
 
 
 info:
@@ -47,3 +38,22 @@ info:
     spring-cloud-version: '@spring-cloud.version@'
     spring-boot-version: '@project.parent.version@'
 
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+  health:
+    db:
+      enabled: true
+    diskspace:
+      enabled: true
+    ping:
+      enabled: true

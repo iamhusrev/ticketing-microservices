@@ -14,6 +14,23 @@ services:
       retries: 5
     networks: [ backend ]
 
+  gateway-service:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        MODULE: gateway-service
+    image: gateway-service:dev
+    ports:
+      - "8762:8762"
+    depends_on:
+      - discovery-service
+      - user-service
+      - project-service
+      - task-service
+    networks:
+      - backend
+
   discovery-service:
     build:
       context: ..
@@ -31,7 +48,7 @@ services:
       start_period: 30s
     networks: [ backend ]
 
-  userservice:
+  user-service:
     build:
       context: ..
       dockerfile: Dockerfile
@@ -53,7 +70,7 @@ services:
       start_period: 40s
     networks: [ backend ]
 
-  projectservice:
+  project-service:
     build:
       context: ..
       dockerfile: Dockerfile
@@ -75,7 +92,7 @@ services:
       start_period: 40s
     networks: [ backend ]
 
-  taskservice:
+  task-service:
     build:
       context: ..
       dockerfile: Dockerfile
