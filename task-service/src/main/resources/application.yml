@@ -18,19 +18,12 @@ spring:
 server:
   port: 9092
 
+
 eureka:
   instance:
-    # 1. Eureka UI'da görünecek isim ve tıklanacak adres için localhost zorla
-    hostname: localhost
-    prefer-ip-address: false # Localhost kullanacağımız için bunu false yapıyoruz
-
-    # 2. Her instance'ın benzersiz olması için ID formatını belirle
+    status-page-url-path: http://localhost:${server.port}/actuator/info
+    health-check-url-path: http://localhost:${server.port}/actuator/health
     instance-id: ${spring.application.name}:${server.port}
-
-    # 3. Tıklanacak linklerin doğru oluşması için path'leri ver
-    status-page-url-path: /actuator/info
-    health-check-url-path: /actuator/health
-
   client:
     serviceUrl:
       defaultZone: http://discovery-service:8761/eureka/
