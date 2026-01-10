@@ -2,6 +2,7 @@ package com.iamhusrev.service.impl;
 
 import com.iamhusrev.dto.ProjectDTO;
 import com.iamhusrev.dto.TaskDTO;
+import com.iamhusrev.dto.UserResponseDTO;
 import com.iamhusrev.entity.Project;
 import com.iamhusrev.entity.Task;
 import com.iamhusrev.entity.User;
@@ -10,6 +11,7 @@ import com.iamhusrev.respository.TaskRepository;
 import com.iamhusrev.service.TaskService;
 import com.iamhusrev.service.UserClientService;
 import com.iamhusrev.util.MapperUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,40 +20,32 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
-    private final MapperUtil mapperUtil;;
+    private final MapperUtil mapperUtil;
     private final UserClientService userClientService;
 
-    public TaskServiceImpl(TaskRepository taskRepository, MapperUtil mapperUtil, UserClientService userClientService) {
-        this.taskRepository = taskRepository;
-        this.mapperUtil = mapperUtil;
-        this.userClientService = userClientService;
-    }
 
     @Override
     public TaskDTO findById(Long id) {
 
         Optional<Task> task = taskRepository.findById(id);
-        if(task.isPresent()){
-//            return taskMapper.convertToDTO(task.get());
-            return mapperUtil.convert(task.get(),new TaskDTO());
-        }
-        return null ;
+        return task.map(value -> mapperUtil.convert(value, new TaskDTO())).orElse(null);
     }
 
     @Override
     public List<TaskDTO> listAllTasks() {
         List<Task> list = taskRepository.findAll();
-        return list.stream().map(obj -> mapperUtil.convert(obj,new TaskDTO())).collect(Collectors.toList());
+        return list.stream().map(obj -> mapperUtil.convert(obj, new TaskDTO())).collect(Collectors.toList());
     }
 
     @Override
     public void save(TaskDTO dto) {
         dto.setTaskStatus(Status.OPEN);
         dto.setAssignedDate(LocalDate.now());
-        Task task = mapperUtil.convert(dto,new Task());
+        Task task = mapperUtil.convert(dto, new Task());
         taskRepository.save(task);
     }
 
@@ -59,9 +53,9 @@ public class TaskServiceImpl implements TaskService {
     public void update(TaskDTO dto) {
 
         Optional<Task> task = taskRepository.findById(dto.getId());
-        Task convertedTask = mapperUtil.convert(dto,new Task());
+        Task convertedTask = mapperUtil.convert(dto, new Task());
 
-        if(task.isPresent()){
+        if (task.isPresent()) {
             convertedTask.setId(task.get().getId());
             convertedTask.setTaskStatus(dto.getTaskStatus() == null ? task.get().getTaskStatus() : dto.getTaskStatus());
             convertedTask.setAssignedDate(task.get().getAssignedDate());
@@ -75,7 +69,7 @@ public class TaskServiceImpl implements TaskService {
 
         Optional<Task> foundTask = taskRepository.findById(id);
 
-        if(foundTask.isPresent()){
+        if (foundTask.isPresent()) {
             foundTask.get().setIsDeleted(true);
             taskRepository.save(foundTask.get());
         }
@@ -111,10 +105,12 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskDTO> listAllTasksByStatusIsNot(Status status) {
 
-        User loggedInUser = mapperUtil.convert(userClientService.getUserDTOByUserName("john@employee.com"),new User());
+        UserResponseDTO userResponseDto = (UserResponseDTO) userClientService.getUserByUserName("john@employee.com").getData();
+
+        User loggedInUser = mapperUtil.convert(userResponseDto.getData(), new User());
 
         List<Task> list = taskRepository.findAllByTaskStatusIsNotAndAssignedEmployee(status, loggedInUser);
-        return list.stream().map(obj -> mapperUtil.convert(obj,new TaskDTO())).collect(Collectors.toList());
+        return list.stream().map(obj -> mapperUtil.convert(obj, new TaskDTO())).collect(Collectors.toList());
     }
 
     @Override
@@ -131,22 +127,24 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDTO> listAllTasksByStatus(Status status) {
+        UserResponseDTO userResponseDto = (UserResponseDTO) userClientService.getUserByUserName("john@employee.com").getData();
 
-        User loggedInUser = mapperUtil.convert(userClientService.getUserDTOByUserName("john@employee.com"),new User());
+        User loggedInUser = mapperUtil.convert(userResponseDto.getData(), new User());
+
         List<Task> list = taskRepository.findAllByTaskStatusAndAssignedEmployee(status, loggedInUser);
-        return list.stream().map(obj -> mapperUtil.convert(obj,new TaskDTO())).collect(Collectors.toList());
+        return list.stream().map(obj -> mapperUtil.convert(obj, new TaskDTO())).collect(Collectors.toList());
     }
 
     @Override
     public List<TaskDTO> readAllByAssignedEmployee(User assignedEmployee) {
         List<Task> list = taskRepository.findAllByAssignedEmployee(assignedEmployee);
-        return list.stream().map(obj -> mapperUtil.convert(obj,new TaskDTO())).collect(Collectors.toList());
+        return list.stream().map(obj -> mapperUtil.convert(obj, new TaskDTO())).collect(Collectors.toList());
     }
 
     private List<TaskDTO> listAllByProject(ProjectDTO project) {
 
-        List<Task> list = taskRepository.findAllByProject(mapperUtil.convert(project,new Project()));
-        return list.stream().map(obj -> mapperUtil.convert(obj,new TaskDTO())).collect(Collectors.toList());
+        List<Task> list = taskRepository.findAllByProject(mapperUtil.convert(project, new Project()));
+        return list.stream().map(obj -> mapperUtil.convert(obj, new TaskDTO())).collect(Collectors.toList());
     }
 
 }

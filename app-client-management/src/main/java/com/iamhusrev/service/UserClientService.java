@@ -1,13 +1,25 @@
 package com.iamhusrev.service;
 
-import com.iamhusrev.dto.UserResponseDTO;
+import com.iamhusrev.dto.UserDTO;
+import com.iamhusrev.entity.ResponseWrapper;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "user-service", path = "/api/v1")
 public interface UserClientService {
 
-    @GetMapping("/user/{username}")
-    UserResponseDTO getUserDTOByUserName(@PathVariable String username);
+    @GetMapping
+    ResponseWrapper getUsers();
+
+    @GetMapping("/{userName}")
+    ResponseWrapper getUserByUserName(@PathVariable String userName);
+
+    @PostMapping
+    ResponseWrapper createUser(@RequestBody UserDTO user);
+
+    @PutMapping
+    ResponseWrapper updateUser(@RequestBody UserDTO user);
+
+    @DeleteMapping("/{userName}")
+    ResponseWrapper deleteUser(@PathVariable String userName);
 }
